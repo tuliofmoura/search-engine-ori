@@ -1,4 +1,4 @@
-package structure;
+package structure.map;
 
 import io.Reader;
 
@@ -36,4 +36,5 @@ public class DocumentIndex
 		File document = getDocument(index);
 		return document.getName();
 	}
+	
 }

@@ -1,9 +1,11 @@
 import javax.swing.JOptionPane;
 
 import process.PreProcess;
-import query.QueryProcessor;
-import query.QueryProcessor.MalformedExpressionException;
-import query.QueryProcessor.UserQuitException;
+import queryengine.BooleanQueryProcessor;
+import queryengine.QueryProcessor;
+import queryengine.TolerantQueryProcessor;
+import queryengine.QueryProcessor.MalformedExpressionException;
+import queryengine.QueryProcessor.UserQuitException;
 
 public class Main
 {
@@ -14,7 +16,9 @@ public class Main
     {
     	try
     	{
+    		//realiza pré-processamento (cria índices se eles não existirem e carrega em memória)
     		preProcess();
+    		//realiza pesquisa
     		query();
     	}
     	catch (UserQuitException ex)
@@ -40,7 +44,15 @@ public class Main
     private static void query() throws Exception
     {
     	System.out.println("Initing query engine...");
-    	QueryProcessor queryProcessor = new QueryProcessor();
-    	queryProcessor.startQueryEngine();
+    	QueryProcessor queryProcessor;
+    	
+    	//consulta booleana
+    	/*queryProcessor = new BooleanQueryProcessor();
+    	queryProcessor.processsQuery();*/
+    	
+    	//consulta tolerante
+    	queryProcessor = new TolerantQueryProcessor();
+    	queryProcessor.processsQuery();
+    	
     }
 }

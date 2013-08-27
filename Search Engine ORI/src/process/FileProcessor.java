@@ -10,8 +10,8 @@ import org.jsoup.nodes.Document;
 
 import structure.ApplicationContext;
 import structure.Constants;
-import structure.DocumentIndex;
 import structure.map.AbstractMap;
+import structure.map.DocumentIndex;
 import structure.map.FrequencyMap;
 import structure.map.TokenMap;
 

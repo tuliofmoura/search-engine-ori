@@ -1,5 +1,8 @@
 package structure;
 
+import structure.map.DocumentIndex;
+import structure.map.InvertedIndex;
+
 
 public class ApplicationContext
 {
