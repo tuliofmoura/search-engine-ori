@@ -14,6 +14,7 @@ import structure.Constants;
 import structure.map.DocumentIndex;
 import structure.map.FrequencyMap;
 import structure.map.InvertedIndex;
+import structure.map.ReverseInvertedIndex;
 import structure.map.TokenMap;
 
 public class PreProcess
@@ -30,7 +31,7 @@ public class PreProcess
     	FileProcessor fileProc = new FileProcessor();
     	loadDocsIndex();
     	createFrequencyMapFile(fileProc);
-    	loadInvertedIndex(fileProc);
+    	loadInvertedIndexes(fileProc);
     }
 	
 	private void loadDocsIndex() throws IOException
@@ -48,20 +49,12 @@ public class PreProcess
 		ApplicationContext.initDocsIndex(new DocumentIndex(docsIndex));
 	}
 
-    /**
-     * Creates a index file of documents, only if the file don't exist.
-     * @throws IOException 
-     */
 	private void createDocumentsIndexFile(String docsIndexPath) throws IOException
 	{
 		ArrayList<File> listOfFiles = Reader.getInstance().getListOfDocuments();
     	Writer.getInstance().createDocumentsIndexFile(docsIndexPath, listOfFiles);
 	}
 	
-	/**
-	 * Creates a frequency map file with collection's terms, only if the file don't exist.
-	 * @throws IOException 
-	 */
 	private void createFrequencyMapFile(FileProcessor fileProcessor) throws IOException
 	{
 		StringBuilder sb = new StringBuilder();
@@ -77,30 +70,32 @@ public class PreProcess
 		Writer.getInstance().createFrequencyMapFile(path, frequencyMap.getSortedTokenMap());
 	}
 	
-	private void loadInvertedIndex(FileProcessor fileProcessor) throws IOException
+	private void loadInvertedIndexes(FileProcessor fileProcessor) throws IOException
 	{
 		StringBuilder sb = new StringBuilder();
     	sb.append(Constants.STRUCTURE_DIRECTORY).append(File.separator)
     		.append(Constants.INVERTED_INDEX);
     	String path = sb.toString();
     	
+    	sb = new StringBuilder();
+    	sb.append(Constants.STRUCTURE_DIRECTORY).append(File.separator)
+			.append(Constants.REVERSE_INVERTED_INDEX);
+    	String reverseMapPath = sb.toString();
+    	
     	if (!Reader.getInstance().existFile(path))
-    		createInvertedIndexFile(path, fileProcessor);
+    		createInvertedIndexFiles(path, reverseMapPath, fileProcessor);
     	
     	TreeMap<String, ArrayList<Integer>> invertedIndex = Reader.getInstance().loadInvertedIndex(path);
-    	
     	ApplicationContext.initInvertedIndex(new InvertedIndex(invertedIndex));
+    	
+    	TreeMap<String, ArrayList<Integer>> reverseInvertedIndex = Reader.getInstance().loadInvertedIndex(reverseMapPath);
+    	ApplicationContext.initReverseInvertedIndex(new ReverseInvertedIndex(reverseInvertedIndex));
 	}
 	
-	/**
-	 * Creates a inverted index file with collection's terms, only if the file don't exist.
-	 * @param fileProcessor
-	 * @throws IOException 
-	 */
-	private void createInvertedIndexFile(String path, FileProcessor fileProcessor) throws IOException
+	private void createInvertedIndexFiles(String sortedMapPath, String reverseMapPath, FileProcessor fileProcessor) throws IOException
 	{
 		TokenMap invertedIndex = (TokenMap) fileProcessor.processFiles(Constants.MAP_BY_FILE);
     	invertedIndex.sort();
-    	Writer.getInstance().createInvertedIndexFile(path, invertedIndex.getSortedTokenMap());
+    	Writer.getInstance().createInvertedIndexFiles(sortedMapPath, reverseMapPath, invertedIndex);
 	}
 }

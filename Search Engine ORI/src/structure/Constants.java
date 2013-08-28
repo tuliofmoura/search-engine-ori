@@ -14,4 +14,5 @@ public class Constants
 	public static final String LIST_OF_TERMS = "list_of_terms_json.txt";
 	public static final String FILES_INDEX = "files_index_json.txt";
 	public static final String INVERTED_INDEX = "inverted_index.txt";
+	public static final String REVERSE_INVERTED_INDEX = "reverse_inverted_index.txt";
 }

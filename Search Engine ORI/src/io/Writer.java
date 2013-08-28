@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+import structure.map.TokenMap;
+
 import com.google.gson.Gson;
 
 public class Writer
@@ -44,9 +46,10 @@ public class Writer
 		}*/
 	}
 	
-	public void createInvertedIndexFile(String path, TreeMap<String, ArrayList<Integer>> map) throws IOException
+	public void createInvertedIndexFiles(String sortedMapPath, String reverseMapPath, TokenMap invertedIndex) throws IOException
 	{
-		createGenericFile(path, map);
+		createGenericFile(sortedMapPath, invertedIndex.getSortedTokenMap());
+		createGenericFile(reverseMapPath, invertedIndex.getReverseTokenMap());
 		/*for (Entry<String, ArrayList<Integer>> entry : map.entrySet())
 		{
 			bw.write(entry.getKey());

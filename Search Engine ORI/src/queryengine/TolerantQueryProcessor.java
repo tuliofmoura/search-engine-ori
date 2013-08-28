@@ -42,14 +42,18 @@ public class TolerantQueryProcessor extends QueryProcessor
 	private String[] processQuery(String query)
 	{
 		String[] splitedQuery = query.split("\\*");
+		String queryNormalized;
 		if (query.endsWith("*"))
 		{
-			String queryNormalized = normalizeToken(splitedQuery[0]);
-			tail(queryNormalized);
+			queryNormalized = normalizeToken(splitedQuery[0]);
+			NavigableMap<String, ArrayList<Integer>> result = tail(queryNormalized);
+			printTolerantWords(result, false);
 		}
 		else if (query.startsWith("*"))
 		{
-			//TODO head
+			queryNormalized = normalizeToken(splitedQuery[1]);
+			NavigableMap<String, ArrayList<Integer>> result = head(queryNormalized);
+			printTolerantWords(result, true);
 		}
 		else if (query.contains("*"))
 		{
@@ -66,21 +70,38 @@ public class TolerantQueryProcessor extends QueryProcessor
 		toKey = toKey + nextChar;
 		
 		NavigableMap<String, ArrayList<Integer>> subMap = ApplicationContext.getInvertedIndex()
-				.getSubMap(fromKey, true, toKey, true);
+				.getSubMap(fromKey, true, toKey, false);
 		
 		return subMap;
 	}
 	
-
-	protected ArrayList<Integer> asdf(String token)
+	private NavigableMap<String, ArrayList<Integer>> head(String fromKey)
 	{
-		SortedMap<String, ArrayList<Integer>> headMapElements = ApplicationContext.getInvertedIndex().getHeadMap(token);
+		String reverseKey = new StringBuilder(fromKey).reverse().toString();
 		
-		for (Map.Entry entry : headMapElements.entrySet())
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+		char lastChar = reverseKey.charAt(reverseKey.length() - 1);
+		char nextChar = (char)(lastChar + 1);
+		String toKey = reverseKey.substring(0, reverseKey.length() - 1);
+		toKey = toKey + nextChar;
 		
+		NavigableMap<String, ArrayList<Integer>> subMap = ApplicationContext.getReverseInvertedIndex()
+				.getSubMap(reverseKey, true, toKey, false);//fromKey, true, toKey, true);
 		
-		return null;
+		return subMap;
+	}
+	
+	private void printTolerantWords(NavigableMap<String, ArrayList<Integer>> map, boolean reverse)
+	{
+		System.out.println("Termos que respondem à busca tolerante:");
+		for (String key : map.keySet())
+		{
+			String word;
+			if (reverse)
+				word = new StringBuilder(key).reverse().toString();
+			else
+				word = key;
+			System.out.println(word);
+		}
 	}
 
 }
