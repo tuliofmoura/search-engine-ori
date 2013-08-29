@@ -1,9 +1,7 @@
 import javax.swing.JOptionPane;
 
 import process.PreProcess;
-import queryengine.BooleanQueryProcessor;
 import queryengine.QueryProcessor;
-import queryengine.TolerantQueryProcessor;
 import queryengine.QueryProcessor.MalformedExpressionException;
 import queryengine.QueryProcessor.UserQuitException;
 
@@ -37,22 +35,18 @@ public class Main
     
     private static void preProcess() throws Exception
     {
+    	System.out.println("Iniciando pré-processamento...");
+    	long start = System.currentTimeMillis();
     	new PreProcess().doPreProcess();
-		System.out.println("Preprocess OK!");
+    	long delta = System.currentTimeMillis() - start;
+		System.out.println("OK! Tempo gasto " + delta + " milisegundos.\n");
     }
     
     private static void query() throws Exception
     {
-    	System.out.println("Initing query engine...");
-    	QueryProcessor queryProcessor;
-    	
-    	//consulta booleana
-    	/*queryProcessor = new BooleanQueryProcessor();
-    	queryProcessor.processsQuery();*/
-    	
-    	//consulta tolerante
-    	queryProcessor = new TolerantQueryProcessor();
-    	queryProcessor.processsQuery();
+    	QueryProcessor queryProcessor = new QueryProcessor();
+    	System.out.println("QueryProcessor Iniciado.\n");
+    	queryProcessor.initQueryProcessor();
     	
     }
 }
